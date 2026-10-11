@@ -141,11 +141,12 @@
 					"threed": "3D",
 					"thx": "THX",
 					"silence": "Silence",
-					"dci-p3": "DCI-P3/D. Cinéma",
 					"infographic": "Infographie",
 					"sport": "Sport",
 					"hdr": "HDR10",
-					"hlg": "HLG"
+					"hlg": "HLG",
+					"dci_p3": "DCI-P3/D. Cinéma",
+					"hdr10": "HDR10"
 				}
 			},
 			"ct": {
