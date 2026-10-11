@@ -24,6 +24,7 @@ from homeassistant.core import (
 )
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers.device_registry import DeviceEntry
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
@@ -287,6 +288,14 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await coordinator.async_disconnect()
 
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+
+
+async def async_remove_config_entry_device(
+    hass: HomeAssistant, entry: ConfigEntry, device_entry: DeviceEntry
+) -> bool:
+    """Allow removing stale devices, the device of the connected projector is kept."""
+    coordinator: BenQProjectorCoordinator = entry.runtime_data
+    return (DOMAIN, coordinator.unique_id) not in device_entry.identifiers
 
 
 async def update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
