@@ -73,7 +73,9 @@ class BenQProjectorCoordinator(DataUpdateCoordinator):
     model = None
     device_info: DeviceInfo = None
 
-    def __init__(self, hass: HomeAssistant | None, projector: BenQProjector) -> None:
+    def __init__(
+        self, hass: HomeAssistant | None, projector: BenQProjector, entry_id: str
+    ) -> None:
         """Initialize BenQ Projector Data Update Coordinator."""
         super().__init__(
             hass,
@@ -90,8 +92,11 @@ class BenQProjectorCoordinator(DataUpdateCoordinator):
         if model is not None:
             self.model = model
 
+        # The projector unique_id is the MAC address when the projector is on and the connection
+        # path when off, so it is not stable. Identify the device by the config entry instead,
+        # like the entities.
         self.device_info = DeviceInfo(
-            identifiers={(DOMAIN, self.unique_id)},
+            identifiers={(DOMAIN, entry_id)},
             name=f"BenQ {model}",
             model=model,
             manufacturer="BenQ",
@@ -238,7 +243,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     _LOGGER.info("Device %s is available", projector.unique_id)
 
-    coordinator = BenQProjectorCoordinator(hass, projector)
+    coordinator = BenQProjectorCoordinator(hass, projector, entry.entry_id)
 
     entry.runtime_data = coordinator
 
@@ -294,8 +299,7 @@ async def async_remove_config_entry_device(
     hass: HomeAssistant, entry: ConfigEntry, device_entry: DeviceEntry
 ) -> bool:
     """Allow removing stale devices, the device of the connected projector is kept."""
-    coordinator: BenQProjectorCoordinator = entry.runtime_data
-    return (DOMAIN, coordinator.unique_id) not in device_entry.identifiers
+    return (DOMAIN, entry.entry_id) not in device_entry.identifiers
 
 
 async def update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
