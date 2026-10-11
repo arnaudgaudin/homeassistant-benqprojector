@@ -13,7 +13,8 @@
   	"benqprojector"
   ],
   "requirements": [
-    "benqprojector==0.1.9"
+    "benqprojector @ git+https://github.com/arnaudgaudin/benqprojector.py@6da7f91d8a70165f017250ab12a7fca2347b0c0e",
+    "pyserial>=3.5"
   ],
-  "version": "0.1.4"
+  "version": "0.1.5"
 }
